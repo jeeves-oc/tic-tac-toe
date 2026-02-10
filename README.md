@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-A polished browser-based Tic-Tac-Toe game with optional AI, persistent scoring, themes, animations, and celebration effects.
+A polished browser-based Tic-Tac-Toe game with optional AI, persistent scoring, themes, animations, and automated tests.
 
 ## Features
 
@@ -11,7 +11,8 @@ A polished browser-based Tic-Tac-Toe game with optional AI, persistent scoring, 
 - **UI animations** for moves and winning line
 - **Confetti celebration** when a winner is found
 - **5 visual themes** with selector + persistence
-- **Unit tests** for game logic with Vitest
+- **Unit tests** (Vitest) for game logic
+- **End-to-end tests** (Playwright)
 
 ## Run locally
 
@@ -24,11 +25,27 @@ Then open <http://127.0.0.1:4173>.
 
 ## Testing
 
+### Unit tests
+
 ```bash
 npm run test:unit
 ```
 
-## CI-style command
+### E2E tests
+
+Install browser once:
+
+```bash
+npx playwright install chromium
+```
+
+Run tests:
+
+```bash
+npm run test:e2e
+```
+
+### CI-style full test run
 
 ```bash
 npm test

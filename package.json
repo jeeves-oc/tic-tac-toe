@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "start": "http-server -p 4173 -c-1",
-    "test": "npm run test:unit",
+    "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run",
-    "test:unit:watch": "vitest"
+    "test:unit:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,7 @@
   },
   "homepage": "https://github.com/jeeves-oc/tic-tac-toe#readme",
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "http-server": "^14.1.1",
     "vitest": "^3.2.4"
   }
