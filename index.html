@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="midnight">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,35 @@
 <body>
   <main class="app">
     <h1>Tic-Tac-Toe</h1>
-    <p id="status">Player X's turn</p>
+
+    <section class="panel" aria-label="Game options">
+      <label>
+        Mode
+        <select id="modeSelect" aria-label="Game mode">
+          <option value="pvp">Player vs Player</option>
+          <option value="ai">Player vs AI</option>
+        </select>
+      </label>
+      <label>
+        Theme
+        <select id="themeSelect" aria-label="Theme selector">
+          <option value="midnight">Midnight</option>
+          <option value="ocean">Ocean</option>
+          <option value="forest">Forest</option>
+          <option value="sunset">Sunset</option>
+          <option value="neon">Neon</option>
+        </select>
+      </label>
+    </section>
+
+    <p id="status" aria-live="polite">Player X's turn</p>
+
+    <section class="scoreboard" aria-label="Scoreboard">
+      <div><span>X</span><strong id="scoreX">0</strong></div>
+      <div><span>O</span><strong id="scoreO">0</strong></div>
+      <div><span>Draws</span><strong id="scoreDraw">0</strong></div>
+    </section>
+
     <section class="board" id="board" aria-label="Tic-Tac-Toe board">
       <button class="cell" data-i="0" aria-label="Cell 1"></button>
       <button class="cell" data-i="1" aria-label="Cell 2"></button>
@@ -21,10 +49,14 @@
       <button class="cell" data-i="7" aria-label="Cell 8"></button>
       <button class="cell" data-i="8" aria-label="Cell 9"></button>
     </section>
+
     <div class="controls">
-      <button id="reset">Reset</button>
+      <button id="reset">Next Round</button>
+      <button id="clearScores" class="ghost">Clear Scores</button>
     </div>
+
+    <canvas id="confetti" aria-hidden="true"></canvas>
   </main>
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
