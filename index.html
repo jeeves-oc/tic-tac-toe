@@ -19,6 +19,14 @@
         </select>
       </label>
       <label>
+        Board Size
+        <select id="sizeSelect" aria-label="Board size selector">
+          <option value="3">3x3</option>
+          <option value="4">4x4</option>
+          <option value="5">5x5</option>
+        </select>
+      </label>
+      <label>
         Theme
         <select id="themeSelect" aria-label="Theme selector">
           <option value="midnight">Midnight</option>
@@ -38,17 +46,7 @@
       <div><span>Draws</span><strong id="scoreDraw">0</strong></div>
     </section>
 
-    <section class="board" id="board" aria-label="Tic-Tac-Toe board">
-      <button class="cell" data-i="0" aria-label="Cell 1"></button>
-      <button class="cell" data-i="1" aria-label="Cell 2"></button>
-      <button class="cell" data-i="2" aria-label="Cell 3"></button>
-      <button class="cell" data-i="3" aria-label="Cell 4"></button>
-      <button class="cell" data-i="4" aria-label="Cell 5"></button>
-      <button class="cell" data-i="5" aria-label="Cell 6"></button>
-      <button class="cell" data-i="6" aria-label="Cell 7"></button>
-      <button class="cell" data-i="7" aria-label="Cell 8"></button>
-      <button class="cell" data-i="8" aria-label="Cell 9"></button>
-    </section>
+    <section class="board" id="board" aria-label="Tic-Tac-Toe board"></section>
 
     <div class="controls">
       <button id="reset">Next Round</button>
