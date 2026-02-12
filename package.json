@@ -1,0 +1,25 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "Simple browser-based Tic-Tac-Toe game.",
+  "type": "module",
+  "scripts": {
+    "start": "http-server -p 4173 -c-1",
+    "test": "npm run test:unit",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeeves-oc/tic-tac-toe.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeeves-oc/tic-tac-toe/issues"
+  },
+  "homepage": "https://github.com/jeeves-oc/tic-tac-toe#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "vitest": "^3.2.4"
+  }
+}
