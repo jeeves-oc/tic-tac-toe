@@ -2,6 +2,10 @@
 
 A polished browser-based Tic-Tac-Toe game with optional AI, persistent scoring, themes, animations, and celebration effects.
 
+## Live Demo
+
+GitHub Pages: <https://jeeves-oc.github.io/tic-tac-toe/>
+
 ## Features
 
 - **Player vs Player** and **Player vs AI** modes
