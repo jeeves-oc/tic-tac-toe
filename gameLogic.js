@@ -1,18 +1,29 @@
-export const WIN_LINES = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6],
-];
+export function buildWinLines(size = 3) {
+  const lines = [];
 
-export function evaluateBoard(board) {
-  for (const [a, b, c] of WIN_LINES) {
-    if (board[a] && board[a] === board[b] && board[b] === board[c]) {
-      return { winner: board[a], line: [a, b, c], isDraw: false };
+  for (let row = 0; row < size; row += 1) {
+    lines.push(Array.from({ length: size }, (_, col) => row * size + col));
+  }
+
+  for (let col = 0; col < size; col += 1) {
+    lines.push(Array.from({ length: size }, (_, row) => row * size + col));
+  }
+
+  lines.push(Array.from({ length: size }, (_, i) => i * size + i));
+  lines.push(Array.from({ length: size }, (_, i) => i * size + (size - 1 - i)));
+
+  return lines;
+}
+
+export function evaluateBoard(board, size = 3) {
+  const winLines = buildWinLines(size);
+
+  for (const line of winLines) {
+    const [first, ...rest] = line;
+    const firstValue = board[first];
+    if (!firstValue) continue;
+    if (rest.every((idx) => board[idx] === firstValue)) {
+      return { winner: firstValue, line, isDraw: false };
     }
   }
 
@@ -28,7 +39,7 @@ export function getAvailableMoves(board) {
 }
 
 function minimax(board, depth, isMaximizing, aiPlayer, humanPlayer) {
-  const result = evaluateBoard(board);
+  const result = evaluateBoard(board, 3);
   if (result.winner === aiPlayer) return 10 - depth;
   if (result.winner === humanPlayer) return depth - 10;
   if (result.isDraw) return 0;
@@ -56,7 +67,12 @@ function minimax(board, depth, isMaximizing, aiPlayer, humanPlayer) {
   return bestScore;
 }
 
-export function getBestMove(board, aiPlayer = 'O', humanPlayer = 'X') {
+export function getBestMove(board, aiPlayer = 'O', humanPlayer = 'X', size = 3) {
+  if (size !== 3) {
+    const moves = getAvailableMoves(board);
+    return moves.length ? moves[Math.floor(Math.random() * moves.length)] : -1;
+  }
+
   let bestScore = -Infinity;
   let move = -1;
 

@@ -6,20 +6,22 @@ const resetBtn = document.getElementById('reset');
 const clearScoresBtn = document.getElementById('clearScores');
 const modeSelect = document.getElementById('modeSelect');
 const themeSelect = document.getElementById('themeSelect');
-const cells = [...document.querySelectorAll('.cell')];
+const sizeSelect = document.getElementById('sizeSelect');
 const scoreXEl = document.getElementById('scoreX');
 const scoreOEl = document.getElementById('scoreO');
 const scoreDrawEl = document.getElementById('scoreDraw');
 const confettiCanvas = document.getElementById('confetti');
 
-const STORAGE_KEY = 'ttt-state-v2';
+const STORAGE_KEY = 'ttt-state-v3';
 
-let board = Array(9).fill('');
+let boardSize = 3;
+let board = Array(boardSize * boardSize).fill('');
 let current = 'X';
 let gameOver = false;
 let mode = 'pvp';
 let theme = 'midnight';
 let scores = { X: 0, O: 0, draw: 0 };
+let cells = [];
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -27,6 +29,7 @@ function loadState() {
   try {
     const state = JSON.parse(raw);
     mode = state.mode === 'ai' ? 'ai' : 'pvp';
+    boardSize = [3, 4, 5].includes(Number(state.boardSize)) ? Number(state.boardSize) : 3;
     theme = state.theme || 'midnight';
     scores = {
       X: Number(state.scores?.X || 0),
@@ -41,7 +44,7 @@ function loadState() {
 function saveState() {
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ mode, theme, scores }),
+    JSON.stringify({ mode, boardSize, theme, scores }),
   );
 }
 
@@ -51,15 +54,15 @@ function drawConfetti() {
   confettiCanvas.width = rect.width;
   confettiCanvas.height = rect.height;
 
-  const particles = Array.from({ length: 120 }, () => ({
+  const particles = Array.from({ length: 220 }, () => ({
     x: Math.random() * confettiCanvas.width,
-    y: -10 - Math.random() * confettiCanvas.height * 0.5,
-    size: 4 + Math.random() * 6,
-    speed: 1 + Math.random() * 3,
-    drift: -1 + Math.random() * 2,
+    y: -10 - Math.random() * confettiCanvas.height,
+    size: 3 + Math.random() * 8,
+    speed: 1 + Math.random() * 4,
+    drift: -1.5 + Math.random() * 3,
     color: `hsl(${Math.random() * 360} 100% 60%)`,
     rot: Math.random() * Math.PI,
-    spin: -0.2 + Math.random() * 0.4,
+    spin: -0.3 + Math.random() * 0.6,
   }));
 
   let frame = 0;
@@ -78,7 +81,7 @@ function drawConfetti() {
       ctx.restore();
     }
 
-    if (frame < 160) {
+    if (frame < 280) {
       requestAnimationFrame(tick);
     } else {
       ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
@@ -94,8 +97,23 @@ function renderScores() {
   scoreDrawEl.textContent = String(scores.draw);
 }
 
+function rebuildBoard() {
+  boardEl.innerHTML = '';
+  boardEl.style.setProperty('--size', String(boardSize));
+
+  for (let i = 0; i < boardSize * boardSize; i += 1) {
+    const btn = document.createElement('button');
+    btn.className = 'cell';
+    btn.dataset.i = String(i);
+    btn.setAttribute('aria-label', `Cell ${i + 1}`);
+    boardEl.appendChild(btn);
+  }
+
+  cells = [...boardEl.querySelectorAll('.cell')];
+}
+
 function renderBoard() {
-  const result = evaluateBoard(board);
+  const result = evaluateBoard(board, boardSize);
   const winningSet = new Set(result.line);
 
   cells.forEach((cell, i) => {
@@ -110,7 +128,7 @@ function renderBoard() {
 }
 
 function updateStatus() {
-  const result = evaluateBoard(board);
+  const result = evaluateBoard(board, boardSize);
   if (result.isDraw) {
     statusEl.textContent = "It's a draw!";
     gameOver = true;
@@ -138,10 +156,10 @@ function maybePlayAi() {
   if (mode !== 'ai' || gameOver || current !== 'O') return;
 
   window.setTimeout(() => {
-    const move = getBestMove([...board], 'O', 'X');
+    const move = getBestMove([...board], 'O', 'X', boardSize);
     if (move < 0 || board[move] || gameOver) return;
     board[move] = 'O';
-    const result = evaluateBoard(board);
+    const result = evaluateBoard(board, boardSize);
     if (!result.winner && !result.isDraw) current = 'X';
     updateStatus();
     renderBoard();
@@ -153,7 +171,7 @@ function playMove(index) {
   if (mode === 'ai' && current === 'O') return;
 
   board[index] = current;
-  const result = evaluateBoard(board);
+  const result = evaluateBoard(board, boardSize);
   if (!result.winner && !result.isDraw) {
     current = current === 'X' ? 'O' : 'X';
   }
@@ -163,7 +181,7 @@ function playMove(index) {
 }
 
 function resetRound(startingPlayer = 'X') {
-  board = Array(9).fill('');
+  board = Array(boardSize * boardSize).fill('');
   current = startingPlayer;
   gameOver = false;
   updateStatus();
@@ -200,6 +218,13 @@ modeSelect.addEventListener('change', () => {
   resetRound('X');
 });
 
+sizeSelect.addEventListener('change', () => {
+  boardSize = Number(sizeSelect.value);
+  rebuildBoard();
+  saveState();
+  resetRound('X');
+});
+
 themeSelect.addEventListener('change', () => {
   theme = themeSelect.value;
   applyTheme();
@@ -207,7 +232,9 @@ themeSelect.addEventListener('change', () => {
 
 loadState();
 modeSelect.value = mode;
+sizeSelect.value = String(boardSize);
 themeSelect.value = theme;
 applyTheme();
 renderScores();
+rebuildBoard();
 resetRound('X');
